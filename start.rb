@@ -1,15 +1,18 @@
 require 'bundler/setup'
 require 'dotenv'
 require 'openai'
+require 'emoji'
 
 # Load .env file
 Dotenv.load
 
 class ChatGPT
+
   def initialize
     OpenAI.configure do |c|
       c.access_token = ENV.fetch('OPENAI_KEY')
       @client = OpenAI::Client.new
+      @emoji = Emoji::Index.new
       # puts client.models.retrieve(id: 'text-davinci-003')
       # puts client.models.retrieve(id: 'gpt-3.5-turbo-0301')
     end
@@ -25,18 +28,27 @@ class ChatGPT
         response = @client.completions(
           parameters: {
             model: 'gpt-3.5-turbo-instruct',
-            prompt: 'Wubby: You are a friendly companion who cares about my well being. Friend: You are an amazing companion!',
+            prompt: 'You are a friendly companion that cares deeply about my well-being and strives to make my life more enjoyable and fulfilling.\nFriend: You are an amazing companion!',
             max_tokens: 4000
           }
         )
         puts(response['choices'].map { |c| c['text'] })
         break
       rescue OpenAI::Error => e
-        retry_count += 1
+        puts "API request [InvalidRequestError] failed
+        with error: #{e}"
+        smiley = @emoji.find_by_moji('heart')
+        return chat_response(prompt: smiley)
       end
     end
+  end
+
+  def hello_emoji
+    #puts 'Hello ' + Emoji.emoji_encode(':wave:')
+    puts(@emoji.find_by_moji('heart'))
   end
 end
 
 chatbot = ChatGPT.new
 chatbot.chat_response
+chatbot.hello_emoji
