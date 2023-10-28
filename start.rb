@@ -23,13 +23,14 @@ class ChatGPT
     max_retries = 9999
     # client = OpenAI::Client.new
     # @client
+    emojis = "In your response include emojis.\n"
     while retry_count <= max_retries
       begin
         response = @client.completions(
           parameters: {
             model: 'gpt-3.5-turbo-instruct',
-            prompt: 'You are a friendly companion that cares deeply about my well-being and strives to make my life more enjoyable and fulfilling.\nFriend: You are an amazing companion!',
-            max_tokens: 4065
+            prompt: 'You are a friendly companion that cares deeply about my well-being and strives to make my life more enjoyable and fulfilling.\nFriend: You are an amazing companion!' + emojis,
+            max_tokens: 4040
           }
         )
         puts(response['choices'].map { |c| c['text'] })
