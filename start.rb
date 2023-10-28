@@ -35,18 +35,20 @@ class ChatGPT
         )
         puts(response['choices'].map { |c| c['text'] })
         break
-      rescue OpenAI::Error => e
+      rescue OpenAI::Error, StandardError => e
         puts "API request [InvalidRequestError] failed
         with error: #{e}"
         smiley = @emoji.find_by_moji('heart')
         return chat_response(prompt: smiley)
       end
+      retry_count += 1
     end
   end
 
   def hello_emoji
     #puts 'Hello ' + Emoji.emoji_encode(':wave:')
     puts(@emoji.find_by_moji('heart'))
+    puts('Hey')
   end
 end
 
