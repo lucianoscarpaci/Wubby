@@ -29,7 +29,7 @@ class ChatGPT
           parameters: {
             model: 'gpt-3.5-turbo-instruct',
             prompt: 'You are a friendly companion that cares deeply about my well-being and strives to make my life more enjoyable and fulfilling.\nFriend: You are an amazing companion!',
-            max_tokens: 4000
+            max_tokens: 4065
           }
         )
         puts(response['choices'].map { |c| c['text'] })
