@@ -47,6 +47,32 @@ class ChatGPT
     end
   end
 
+  def turbo_response
+    retry_count = 0
+    max_retries = 9999
+
+    while retry_count <= max_retries
+      begin
+        response = @client.chat(
+          parameters: {
+            model: 'gpt-3.5-turbo-0301',
+            messages: [{ role: 'user', content: 'What is <> in react?' }],
+            temperature: 1,
+            max_tokens: 4040
+          }
+        )
+        puts response.dig('choices', 0, 'message', 'content')
+        break
+      rescue OpenAI::Error, StandardError => e
+        puts "API request [InvalidRequestError] failed
+        with error: #{e}"
+        smiley = @emoji.find_by_moji('heart')
+        return chat_response(prompt: smiley)
+      end
+      retry_count += 1
+    end
+  end
+
   def hello_emoji
     # puts 'Hello ' + Emoji.emoji_encode(':wave:')
     puts(@emoji.find_by_moji('heart'))
@@ -59,6 +85,7 @@ class ChatGPT
 end
 
 chatbot = ChatGPT.new
-chatbot.discord_bot
+#chatbot.discord_bot
 chatbot.chat_response
+chatbot.turbo_response
 chatbot.hello_emoji
