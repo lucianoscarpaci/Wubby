@@ -9,15 +9,24 @@ Dotenv.load
 
 class ChatGPT
   def initialize
+    initialize_openai
+    initialize_discord
+    initialize_emoji
+  end
+
+  def initialize_openai
     OpenAI.configure do |c|
       c.access_token = ENV.fetch('OPENAI_KEY')
-      @client = OpenAI::Client.new
-
-      # puts client.models.retrieve(id: 'text-davinci-003')
-      # puts client.models.retrieve(id: 'gpt-3.5-turbo-0301')
     end
-    @emoji = Emoji::Index.new
+    @client = OpenAI::Client.new
+  end
+
+  def initialize_discord
     @wubby = Discordrb::Bot.new token: ENV.fetch('DISCORD_TOKEN')
+  end
+
+  def initialize_emoji
+    @emoji = Emoji::Index.new
   end
 
   def chat_response
@@ -39,7 +48,7 @@ class ChatGPT
         break
       rescue OpenAI::Error, StandardError => e
         puts "API request [InvalidRequestError] failed
-        with error: #{e}"
+          with error: #{e}"
         smiley = @emoji.find_by_moji('heart')
         return chat_response(prompt: smiley)
       end
@@ -65,7 +74,7 @@ class ChatGPT
         break
       rescue OpenAI::Error, StandardError => e
         puts "API request [InvalidRequestError] failed
-        with error: #{e}"
+          with error: #{e}"
         smiley = @emoji.find_by_moji('heart')
         return chat_response(prompt: smiley)
       end
@@ -85,7 +94,7 @@ class ChatGPT
 end
 
 chatbot = ChatGPT.new
-#chatbot.discord_bot
+# chatbot.discord_bot
 chatbot.chat_response
 chatbot.turbo_response
 chatbot.hello_emoji
