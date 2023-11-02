@@ -2,20 +2,22 @@ require 'bundler/setup'
 require 'dotenv'
 require 'openai'
 require 'emoji'
+require 'discordrb'
 
 # Load .env file
 Dotenv.load
 
 class ChatGPT
-
   def initialize
     OpenAI.configure do |c|
       c.access_token = ENV.fetch('OPENAI_KEY')
       @client = OpenAI::Client.new
-      @emoji = Emoji::Index.new
+
       # puts client.models.retrieve(id: 'text-davinci-003')
       # puts client.models.retrieve(id: 'gpt-3.5-turbo-0301')
     end
+    @emoji = Emoji::Index.new
+    @wubby = Discordrb::Bot.new token: ENV.fetch('DISCORD_TOKEN')
   end
 
   def chat_response
@@ -46,12 +48,17 @@ class ChatGPT
   end
 
   def hello_emoji
-    #puts 'Hello ' + Emoji.emoji_encode(':wave:')
+    # puts 'Hello ' + Emoji.emoji_encode(':wave:')
     puts(@emoji.find_by_moji('heart'))
     puts('Hey')
+  end
+
+  def discord_bot
+    @wubby.run
   end
 end
 
 chatbot = ChatGPT.new
+chatbot.discord_bot
 chatbot.chat_response
 chatbot.hello_emoji
