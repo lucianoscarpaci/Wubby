@@ -90,7 +90,7 @@ class Discord
   end
 
   def on_message
-    @wubby.message(with_text: '!wubby') do |event|
+    @wubby.message(ending_with: '!wubby') do |event|
       event.respond 'wubbbbby'
     end
   end
