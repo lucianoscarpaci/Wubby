@@ -79,15 +79,18 @@ end
 class Discord
   def initialize
     @wubby = Discordrb::Bot.new token: ENV.fetch('DISCORD_TOKEN')
+    
+    run
   end
 
   def run
+    puts("login successful you are now logged in as: #{@wubby.profile.username='Wubby'}")
     @wubby.run
   end
 end
 
 discordbot = Discord.new
 chatbot = ChatGPT.new
-#discordbot.run
-chatbot.chat_response
-chatbot.turbo_response
+discordbot
+# chatbot.chat_response
+# chatbot.turbo_response
