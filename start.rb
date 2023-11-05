@@ -9,23 +9,10 @@ Dotenv.load
 
 class ChatGPT
   def initialize
-    initialize_openai
-    initialize_discord
-    initialize_emoji
-  end
-
-  def initialize_openai
     OpenAI.configure do |c|
       c.access_token = ENV.fetch('OPENAI_KEY')
     end
     @client = OpenAI::Client.new
-  end
-
-  def initialize_discord
-    @wubby = Discordrb::Bot.new token: ENV.fetch('DISCORD_TOKEN')
-  end
-
-  def initialize_emoji
     @emoji = Emoji::Index.new
   end
 
@@ -87,14 +74,20 @@ class ChatGPT
     puts(@emoji.find_by_moji('heart'))
     puts('Hey')
   end
+end
 
-  def discord_bot
+class Discord
+  def initialize
+    @wubby = Discordrb::Bot.new token: ENV.fetch('DISCORD_TOKEN')
+  end
+
+  def run
     @wubby.run
   end
 end
 
+discordbot = Discord.new
 chatbot = ChatGPT.new
-# chatbot.discord_bot
+#discordbot.run
 chatbot.chat_response
 chatbot.turbo_response
-chatbot.hello_emoji
